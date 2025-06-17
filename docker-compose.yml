@@ -1,0 +1,29 @@
+services:
+  backend:
+    build: ./server
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/powersmybiz
+      - JWT_SECRET=supersecret
+    depends_on:
+      - mongo
+    volumes:
+      - ./server:/app
+    restart: always
+
+  frontend:
+    build: ./frontend        # ✅ corrected from ./client to ./frontend
+    ports:
+      - "3000:80"
+    restart: always
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
