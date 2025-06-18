@@ -8,16 +8,22 @@ export default function Register() {
     name: "",
     email: "",
     password: "",
-    adminKey: "", // optional
+    adminKey: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
       const res = await axios.post("/auth/register", form);
       login(res.data);
     } catch (err) {
-      alert(err.response?.data?.msg || "Registration failed");
+      setError( "Email or Passowrd Invalid");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,18 +55,23 @@ export default function Register() {
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
           />
-          {/* Optional Admin Key Field */}
           <input
             type="text"
             placeholder="Admin Key (leave blank if user)"
             className="w-full bg-[#1a1a1a] text-white p-3 rounded-lg border border-[#333] focus:outline-none focus:ring-2 focus:ring-blue-500"
             onChange={(e) => setForm({ ...form, adminKey: e.target.value })}
           />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition flex justify-center items-center"
+            disabled={loading}
           >
-            Register
+            {loading ? (
+              <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              "Register"
+            )}
           </button>
         </form>
         <p className="text-sm text-center text-gray-400 mt-6">
