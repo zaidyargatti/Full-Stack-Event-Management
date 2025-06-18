@@ -57,8 +57,28 @@ const getMe = async (req, res) => {
   }
 };
 
+
+const uploadProfilePic = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const imageUrl = req.file.path;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: imageUrl },
+      { new: true }
+    );
+
+    res.json({ profilePic: user.profilePic });
+  } catch (err) {
+    console.error("Upload error:", err);
+    res.status(500).json({ msg: "Failed to upload image" });
+  }
+};
+
 export {
 registerUser,
 loginUser,
-getMe
+getMe,
+uploadProfilePic
 }

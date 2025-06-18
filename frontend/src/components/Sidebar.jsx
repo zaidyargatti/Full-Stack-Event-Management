@@ -11,16 +11,24 @@ export default function Sidebar() {
   const fileInputRef = useRef(null);
 
   const handleNameChange = (e) => setEditableName(e.target.value);
+const handleProfilePicChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-  const handleProfilePicChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfilePic(imageUrl);
+  const formData = new FormData();
+  formData.append("profilePic", file);
 
-      // TODO: Send file to backend to save permanently
-    }
-  };
+  try {
+    const res = await axios.post("/auth/upload-profile", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    setProfilePic(res.data.profilePic);
+  } catch (err) {
+    console.error("Profile pic upload failed:", err.response?.data || err);
+  }
+};
+
 
   return (
     <div className="bg-[#111] text-white w-64 min-h-screen p-6 flex flex-col justify-between">
