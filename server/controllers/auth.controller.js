@@ -9,12 +9,20 @@ const generateToken = (user) => {
 };
 
  const registerUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, adminKey } = req.body;
+
   try {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ msg: 'User already exists' });
 
     const hashed = await bcrypt.hash(password, 10);
+
+    // 🔐 Only use admin role if adminKey matches
+    let role = 'user';
+    if (adminKey && adminKey === process.env.ADMIN_KEY) {
+      role = 'admin';
+    }
+
     const user = await User.create({ name, email, password: hashed, role });
 
     const token = generateToken(user);

@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import { useState } from "react";
 import axios from "../services/Axios";
 import { useAuth } from "../context/AuthContext";
@@ -9,7 +8,7 @@ export default function Register() {
     name: "",
     email: "",
     password: "",
-    role: "user",
+    adminKey: "", // optional
   });
 
   const handleSubmit = async (e) => {
@@ -50,13 +49,13 @@ export default function Register() {
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
           />
-          <select
+          {/* Optional Admin Key Field */}
+          <input
+            type="text"
+            placeholder="Admin Key (leave blank if user)"
             className="w-full bg-[#1a1a1a] text-white p-3 rounded-lg border border-[#333] focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
+            onChange={(e) => setForm({ ...form, adminKey: e.target.value })}
+          />
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition"
