@@ -7,6 +7,7 @@ import MyBookings from './pages/MyBookings';
 import AdminEvents from './pages/AdminEvents';
 import Analytics from './pages/Analytics';
 import { useAuth } from './context/AuthContext';
+import Landing from './pages/LandingPage';
 
 function App() {
   const { user } = useAuth();
@@ -14,7 +15,9 @@ function App() {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+      <Route path="/" element={<Landing />} />
+
+      <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
       <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
 
       {/* Protected Routes */}
