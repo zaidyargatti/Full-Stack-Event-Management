@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import axios from "../services/Axios";
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
