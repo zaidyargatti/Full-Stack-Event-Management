@@ -27,7 +27,7 @@ export default function Dashboard() {
 
       <div className="flex-1 p-10 bg-[#0a0a0a]">
         <h1 className="text-2xl font-bold mb-6 text-blue-500">
-          Good {new Date().getHours() < 12 ? "morning" : "evening"}, {user.name}
+          Good {new Date().getHours() < 12 ? "Morning" : "Evening"}, {user.name}
         </h1>
 
         {user.role === "user" && (
