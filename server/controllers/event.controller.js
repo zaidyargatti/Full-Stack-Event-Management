@@ -1,4 +1,5 @@
 import Event from "../models/event.model.js";
+import Booking from "../models/booking.model.js";
 
  const createEvent = async (req, res) => {
   try {
