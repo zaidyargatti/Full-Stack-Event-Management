@@ -46,12 +46,17 @@ import Event from "../models/event.model.js";
 
  const deleteEvent = async (req, res) => {
   try {
+    // First delete related bookings
+    await Booking.deleteMany({ event: req.params.id });
+
+    // Then delete the event
     await Event.findByIdAndDelete(req.params.id);
-    res.json({ msg: 'Event deleted' });
+
+    res.json({ msg: "Event and related bookings deleted" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
-}
+};
 
 export {
     createEvent,
