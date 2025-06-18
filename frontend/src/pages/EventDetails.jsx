@@ -6,19 +6,23 @@ export default function EventDetails() {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [booked, setBooked] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     axios.get(`/events/${id}`).then((res) => setEvent(res.data));
   }, [id]);
 
   const handleBooking = async () => {
+    setError("");
+    setSuccess("");
     try {
       await axios.post(`/bookings/${id}/book`);
-      alert("Seat booked successfully!");
       setBooked(true);
+      setSuccess("Seat booked successfully!");
       setEvent({ ...event, availableSeats: event.availableSeats - 1 });
     } catch (err) {
-      alert(err.response?.data?.msg || "Booking failed");
+      setError(err.response?.data?.msg || "Booking failed");
     }
   };
 
@@ -32,6 +36,10 @@ export default function EventDetails() {
         <p className="text-sm text-gray-500 mb-4">
           Seats Available: {event.availableSeats}
         </p>
+
+        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+        {success && <p className="text-green-500 text-sm mb-3">{success}</p>}
+
         <button
           disabled={booked || event.availableSeats <= 0}
           onClick={handleBooking}
