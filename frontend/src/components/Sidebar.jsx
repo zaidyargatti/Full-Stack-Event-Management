@@ -5,31 +5,31 @@ import axios from "../services/Axios";
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
+  const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}&background=0D8ABC&color=fff`;
 
   const [editableName, setEditableName] = useState(user?.name || "");
   const [isEditingName, setIsEditingName] = useState(false);
-  const [profilePic, setProfilePic] = useState(user?.profilePic || "/default-profile.png");
+  const [profilePic, setProfilePic] = useState(user?.profilePic || defaultAvatar);
   const fileInputRef = useRef(null);
 
   const handleNameChange = (e) => setEditableName(e.target.value);
-const handleProfilePicChange = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
 
-  const formData = new FormData();
-  formData.append("profilePic", file);
+  const handleProfilePicChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  try {
-    const res = await axios.post("/auth/upload-profile", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const formData = new FormData();
+    formData.append("profilePic", file);
 
-    setProfilePic(res.data.profilePic);
-  } catch (err) {
-    console.error("Profile pic upload failed:", err.response?.data || err);
-  }
-};
-
+    try {
+      const res = await axios.post("/auth/upload-profile", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setProfilePic(res.data.profilePic);
+    } catch (err) {
+      console.error("Profile pic upload failed:", err.response?.data || err);
+    }
+  };
 
   return (
     <div className="bg-[#111] text-white w-64 min-h-screen p-6 flex flex-col justify-between">
@@ -40,6 +40,7 @@ const handleProfilePicChange = async (e) => {
             <img
               src={profilePic}
               alt="Profile"
+              onError={(e) => (e.target.src = defaultAvatar)}
               className="w-20 h-20 rounded-full object-cover border-2 border-blue-400 cursor-pointer"
               onClick={() => fileInputRef.current.click()}
             />

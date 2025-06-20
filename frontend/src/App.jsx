@@ -65,32 +65,3 @@ export default App;
 
 
 
-
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import Login from './pages/Login';
-// import Register from './pages/Register';
-// // import Dashboard from './pages/Dashboard';
-// // import EventDetails from './pages/EventDetails';
-// // import MyBookings from './pages/MyBookings';
-// // import AdminEvents from './pages/AdminEvents';
-// // import Analytics from './pages/Analytics';
-// // import Navbar from './components/Navbar';
-
-// function App() {
-//   return (
-//     <>
-//       {/* <Navbar /> */}
-//       <Routes>
-//         <Route path="/" element={<Login />} />
-//         {/* <Route path="/login" element={<Login />} /> */}
-//         <Route path="/register" element={<Register />} />
-//         {/* <Route path="/event/:id" element={<EventDetails />} />
-//         <Route path="/my-bookings" element={<MyBookings />} />
-//         <Route path="/admin/events" element={<AdminEvents />} />
-//         <Route path="/admin/analytics" element={<Analytics />} /> */}
-//       </Routes>
-//     </>
-//   );
-// }
-
-// export default App;

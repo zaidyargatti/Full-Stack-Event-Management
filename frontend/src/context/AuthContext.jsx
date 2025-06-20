@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ add this
   const navigate = useNavigate();
 
   const login = async (data) => {
@@ -26,17 +27,23 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
     } catch {
       logout();
+    } finally {
+      setLoading(false); // ✅ done loading
     }
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) loadUser();
+    if (token) {
+      loadUser();
+    } else {
+      setLoading(false); // ✅ no token, stop waiting
+    }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
+      {!loading && children} {/* ✅ Wait for user before rendering */}
     </AuthContext.Provider>
   );
 };
