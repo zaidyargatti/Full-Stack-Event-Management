@@ -37,28 +37,33 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Step 1: Always check user from DB (we need password for bcrypt)
+    // 1. Find the user
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: 'Invalid credentials' });
 
+    // 2. Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
-    // Step 2: Prepare user data to send & cache
-    const userData = { name: user.name, email: user.email, role: user.role };
+    // 3. Prepare Redis cache key
     const redisKey = `user:${email}`;
+    const userData = { name: user.name, email: user.email, role: user.role };
 
-    // Step 3: Cache non-sensitive user info for next use
-   await client.set(redisKey, JSON.stringify(userData), 'EX', 60 * 60 * 24); // 24 hours TTL
+    // 4. Set Redis cache if Redis is connected
+    if (client.status === 'ready') {
+      await client.set(redisKey, JSON.stringify(userData), 'EX', 60 * 60 * 24);
+    }
 
-    // Step 4: Generate token and return
+    // 5. Generate token and respond
     const token = generateToken(user);
     res.status(200).json({ token, user: userData });
 
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    console.error('Login Error:', err); // Log the full error on server
+    res.status(500).json({ msg: 'Server Error: ' + err.message });
   }
 };
+
 
 const getMe = async (req, res) => {
   try {
