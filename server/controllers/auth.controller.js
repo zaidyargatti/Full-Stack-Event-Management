@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
+import client from '../config/client.js';
 
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
@@ -34,15 +35,26 @@ const generateToken = (user) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
   try {
+    // Step 1: Always check user from DB (we need password for bcrypt)
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: 'Invalid credentials' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
+    // Step 2: Prepare user data to send & cache
+    const userData = { name: user.name, email: user.email, role: user.role };
+    const redisKey = `user:${email}`;
+
+    // Step 3: Cache non-sensitive user info for next use
+   await client.set(redisKey, JSON.stringify(userData), 'EX', 60 * 60 * 24); // 24 hours TTL
+
+    // Step 4: Generate token and return
     const token = generateToken(user);
-    res.status(200).json({ token, user: { name: user.name, email, role: user.role } });
+    res.status(200).json({ token, user: userData });
+
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
