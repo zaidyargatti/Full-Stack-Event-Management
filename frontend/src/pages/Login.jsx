@@ -16,7 +16,7 @@ export default function Login() {
       const res = await axios.post("/auth/login", form);
       login(res.data);
     } catch (err) {
-      setError("Passworn or Email is Invalid");
+      setError("Password or Email is Invalid");
     } finally {
       setLoading(false);
     }
